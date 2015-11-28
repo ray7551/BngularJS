@@ -1,0 +1,31 @@
+{
+  "name": "BngularJS",
+  "version": "0.0.0",
+  "description": "Learn a wheel by make a wheel.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "karma start karma.conf.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ray7551/BngularJS.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ray7551/BngularJS/issues"
+  },
+  "homepage": "https://github.com/ray7551/BngularJS",
+  "dependencies": {},
+  "devDependencies": {
+    "jasmine": "^2.3.2",
+    "karma": "^0.13.15",
+    "jasmine-core": "^2.3.4",
+    "karma-jasmine": "^0.3.6",
+    "karma-chrome-launcher": "^0.2.1",
+    "karma-browserify": "^4.4.1"
+  }
+}
