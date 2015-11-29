@@ -81,4 +81,13 @@ describe('Scope', function() {
 
     });
   });
+
+  describe('$apply', function() {
+    it('should apply expression', function() {
+      $rootScope.$apply(function() {
+        $rootScope.a = 1;
+      });
+      expect($rootScope.a).toEqual(1);
+    })
+  });
 });

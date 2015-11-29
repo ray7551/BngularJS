@@ -47,9 +47,18 @@ Scope.prototype = {
         watcher.last = newVal;
       }
     });
+  },
+
+  $apply: function(expFn) {
+    try {
+      expFn();
+    } catch (e) {
+      // $exceptionHandler(e)
+    } finally {
+      $rootScope.$digest();
+    }
   }
 
-  //$apply
   //$on
   //$emit
   //$boardcast
