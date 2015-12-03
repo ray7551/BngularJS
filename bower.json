@@ -1,0 +1,23 @@
+{
+  "name": "BngularJS",
+  "version": "0.0.0",
+  "homepage": "https://github.com/ray7551/bngular.js",
+  "authors": [
+    "ray li <ray7551@gmail.com>"
+  ],
+  "moduleType": [
+    "amd"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "requirejs": "~2.1.22"
+  }
+}
