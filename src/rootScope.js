@@ -1,8 +1,10 @@
 /*jslint node: true */
+define([], function() {
 "use strict";
 
 var Scope = function() {
-  this.$$watchers = this.$parent = null;
+  this.$$watchers = [];
+  this.$parent = null;
   this.$root = this;
 };
 
@@ -31,19 +33,19 @@ Scope.prototype = {
           last: null
         };
 
-    if(!scope.$$watchers) {
-      scope.$$watchers = [];
-    }
     scope.$$watchers.unshift(watcher);
   },
 
-  //$watchCollection
+  // $watchCollection: function() {
+
+  // },
+
   $digest: function() {
     var scope = this;
     scope.$$watchers.forEach(function(watcher){
-      var newVal = scope[watcher.watchExp];
+      var newVal = scope.$eval(watcher.watchExp);
       if(watcher.last !== newVal) {
-        watcher.listener(newVal, watcher.last);
+        watcher.listener(newVal, watcher.last, scope);
         watcher.last = newVal;
       }
     });
@@ -57,6 +59,22 @@ Scope.prototype = {
     } finally {
       $rootScope.$digest();
     }
+  },
+
+  $eval: function (exp) {
+    var val;
+    if (typeof exp === 'function') {
+      val = exp.call(this);
+    } else {
+      try {
+        val = function(exp) {
+          return eval('this.' + exp);
+        }.call(this, exp);
+      } catch (e) {
+        val = undefined;
+      }
+    }
+    return val;
   }
 
   //$on
@@ -66,5 +84,6 @@ Scope.prototype = {
 };
 
 var $rootScope = new Scope();
+return $rootScope;
 
-module.exports = $rootScope;
+});

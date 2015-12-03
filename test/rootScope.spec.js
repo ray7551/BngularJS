@@ -1,13 +1,9 @@
 //'use strict';
-$rootScope = require('../src/rootScope');
-
-var inject = function(fn) {
-  var newFn;
-
-  return newFn;
-};
+define(['rootScope'], function($rootScope) {
 
 describe('Scope', function() {
+
+
   describe('$root', function() {
     it('should point to itself', function() {
       expect($rootScope.$root).toEqual($rootScope);
@@ -44,7 +40,7 @@ describe('Scope', function() {
       expect(child.$new).toBe($rootScope.$new);
       expect(child.$root).toBe($rootScope);
       expect(child.hasOwnProperty('$$watchers')).toBeTruthy();
-      expect(child.$$watchers).toEqual(null);
+      expect(child.$$watchers).toEqual([]);
     });
 
     // it("should attach the child scope to a specified parent", function() {
@@ -58,27 +54,70 @@ describe('Scope', function() {
   });
 
   describe('$watch/$digest', function() {
-    it('should trigger listener whenever the watchExpression changes', function() {
-      $rootScope.name = 'hi';
-      $rootScope.counter = 0;
+    it('should watch and fire on simple property change', function() {
+      var spy = jasmine.createSpy();
+      $rootScope.$watch('name', spy);
+      $rootScope.$digest();
 
-      $rootScope.$watch('name', function(newVal, oldVal) {
-        $rootScope.counter += 1;
+      spy.calls.reset();
+
+      expect(spy).not.toHaveBeenCalled();
+      $rootScope.$digest();
+      expect(spy).not.toHaveBeenCalled();
+      $rootScope.name = 'misko';
+      $rootScope.$digest();
+      expect(spy).toHaveBeenCalledWith('misko', undefined, $rootScope);
+    });
+
+    it('should watch and fire on expression change', function() {
+      var spy = jasmine.createSpy();
+      $rootScope.$watch('name.first', spy);
+      $rootScope.$digest();
+      spy.calls.reset();
+
+      $rootScope.name = {};
+      expect(spy).not.toHaveBeenCalled();
+      $rootScope.$digest();
+      expect(spy).not.toHaveBeenCalled();
+      $rootScope.name.first = 'misko';
+      $rootScope.$digest();
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('should watch and fire on function return change', function() {
+      var spy = jasmine.createSpy();
+      var name;
+      $rootScope.$watch(function() {
+        return name;
+      }, spy);
+      $rootScope.$digest();
+
+      spy.calls.reset();
+
+      expect(spy).not.toHaveBeenCalled();
+      $rootScope.$digest();
+      expect(spy).not.toHaveBeenCalled();
+      name = 'misko';
+      $rootScope.$digest();
+      expect(spy).toHaveBeenCalledWith('misko', undefined, $rootScope);
+    });
+
+    it('should watch and fire on function return change', function() {
+      var name,
+          count = 0;
+      $rootScope.$watch(function() {
+        return name;
+      }, function(newVal, oldVal) {
+        count++;
       });
-
-      expect($rootScope.counter).toEqual(0);
       $rootScope.$digest();
-      // the listener is always called during the first $digest loop after it was registered
-      expect($rootScope.counter).toEqual(1);
 
+      expect(count).toEqual(1);
       $rootScope.$digest();
-      // but now it will not be called unless the value changes
-      expect($rootScope.counter).toEqual(1);
-
-      $rootScope.name = 'adam';
+      expect(count).toEqual(1);
+      name = 'misko';
       $rootScope.$digest();
-      expect($rootScope.counter).toEqual(2);
-
+      expect(count).toEqual(2);
     });
   });
 
@@ -88,6 +127,8 @@ describe('Scope', function() {
         $rootScope.a = 1;
       });
       expect($rootScope.a).toEqual(1);
-    })
+    });
   });
+});
+
 });
